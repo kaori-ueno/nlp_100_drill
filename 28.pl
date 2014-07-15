@@ -9,9 +9,6 @@ while ( $line = <STDIN> ) {
     if ( defined $dict{$subst} ) {
       $dict{$subst}++;
     }
-    else {
-      $dict{$subst} = 1;
-    }
   }
 }
 
