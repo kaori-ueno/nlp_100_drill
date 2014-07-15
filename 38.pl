@@ -2,23 +2,21 @@ use warnings;
 use Data::Dumper qw( Dumper );
 use List::Util qw( sum );
 
-my $prev_word = "";
 my %syzygy;
+my $count = 0;
 while ( <> ) {
   chomp $_;
-  my ( $word_in_sentence, $word ) = split /\t/, $_;
+  my ( $word, $next_word, $prob ) = split /\t/, $_;
   if ( length $word ) {
-    $syzygy{$prev_word} = {} unless exists $syzygy{$prev_word}; 
-    $syzygy{$prev_word}->{$word}++;
-    $prev_word = $word;
+    $syzygy{$word} = {} unless exists $syzygy{$word};
+    $syzygy{$word}->{$next_word} = $prob;
   }
 }
 
-foreach my $prev_word ( keys %syzygy ) {
-  my $count = sum values $syzygy{$prev_word};
-  foreach my $word ( keys %{ $syzygy{$prev_word} } ) {
-    $syzygy{$prev_word}->{$word} = $syzygy{$prev_word}->{$word} / $count;
+foreach my $word ( keys %syzygy ) {
+  my $total_prob = sum values %{ $syzygy{$word} };
+  foreach my $next_word ( keys %{ $syzygy{$word} } ) {
+    my $new_prob = $syzygy{$word}->{$next_word} / $total_prob;
+    print "${word}\t${next_word}\t${new_prob}\n";
   }
 }
-
-print Dumper \%syzygy;

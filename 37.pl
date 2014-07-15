@@ -1,24 +1,19 @@
-use warnings;
-use Data::Dumper qw( Dumper );
-
-my $prev_word = "";
 my %syzygy;
-my $count;
+my $count = 0;
 while ( <> ) {
   chomp $_;
-  my ( $word_in_sentence, $word ) = split /\t/, $_;
+  my ( $word, $next_word ) = split /\t/, $_;
   if ( length $word ) {
-    $syzygy{$prev_word} = {} unless exists $syzygy{$prev_word}; 
-    $syzygy{$prev_word}->{$word}++;
-    $prev_word = $word;
+    $syzygy{$word} = {} unless exists $syzygy{$word};
+    $syzygy{$word}->{$next_word}++;
     $count++;
   }
 }
 
-foreach my $prev_word ( keys %syzygy ) {
-  foreach my $word ( keys %{ $syzygy{$prev_word} } ) {
-    $syzygy{$prev_word}->{$word} = $syzygy{$prev_word}->{$word} / $count;
+foreach my $word ( keys %syzygy ) {
+  foreach my $next_word ( keys %{ $syzygy{$word} } ) {
+    my $prob = $syzygy{$word}->{$next_word} / $count;
+    print "${word}\t${next_word}\t${prob}\n";
   }
 }
 
-print Dumper \%syzygy;
